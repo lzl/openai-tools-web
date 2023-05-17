@@ -1,18 +1,16 @@
-import { useState } from 'react'
+import useSheetData from './useSheetData'
 import FileUploader from './FileUploader'
 import SheetTable from './SheetTable'
+import GPTButton from './GPTButton'
 
 function App() {
-  const [sheetData, setSheetData] = useState<any>([])
-
-  function handleSuccess(json: any[]) {
-    setSheetData(json)
-  }
+  const { data, setData, setAnswer } = useSheetData()
 
   return (
     <div>
-      <FileUploader onSuccess={handleSuccess} />
-      <SheetTable data={sheetData} />
+      <FileUploader onSuccess={setData} />
+      <SheetTable data={data} />
+      <GPTButton data={data} onSuccess={setAnswer} />
     </div>
   )
 }
