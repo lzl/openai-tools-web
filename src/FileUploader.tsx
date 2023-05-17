@@ -20,7 +20,7 @@ function FileUploader({ onSuccess }: IProps) {
     ) {
       setSelectedFile(file)
     } else {
-      alert('Please select an xlsx or xls file.')
+      alert('Please select an xlsx file.')
     }
   }
 
@@ -29,7 +29,6 @@ function FileUploader({ onSuccess }: IProps) {
       if (selectedFile) {
         const formData = new FormData()
         formData.append('file', selectedFile)
-
         // Upload formData to server
         const response = await fetch(URL, {
           method: 'POST',
@@ -49,7 +48,7 @@ function FileUploader({ onSuccess }: IProps) {
 
   return (
     <div>
-      <input type="file" onChange={handleFileChange} accept=".xls, .xlsx" />
+      <input type="file" onChange={handleFileChange} accept=".xlsx" />
       <button onClick={handleUploadFile}>Upload</button>
       {error && <div className="error">{error}</div>}
     </div>

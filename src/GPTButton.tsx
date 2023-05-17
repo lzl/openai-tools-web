@@ -1,3 +1,5 @@
+import { useRef } from 'react'
+
 class RequestQueue {
   private queue: {
     request: () => Promise<any>
@@ -49,31 +51,59 @@ function createPayload(messages: IMessage[]) {
   }
 }
 
-async function fetchAnswer() {
-  const payload = createPayload([{ role: 'user', content: 'hi' }])
+async function fetchAnswer(content: string, apiKey: string) {
+  const payload = createPayload([{ role: 'user', content }])
   return fetch(URL, {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
+      authorization: 'Bearer ' + apiKey || '',
     },
     body: JSON.stringify(payload),
   }).then((res) => res.json())
 }
 
 interface IProps {
+  prompt: string
   data: any[]
   onSuccess: (idx: number, answer: string) => void
+  disabled?: boolean
 }
 
-function GPTButton({ data, onSuccess }: IProps) {
+function GPTButton({ prompt, data, onSuccess, disabled }: IProps) {
+  const apiKeyRef = useRef<HTMLInputElement>(null)
+
   async function handleSubmit() {
+    const apiKey = apiKeyRef.current?.value
+    if (!apiKey) return
     const queue = new RequestQueue()
     data.forEach((row, idx) => {
-      queue.add(fetchAnswer, (answer) => onSuccess(idx, answer))
+      // const hasAnswer = !!row.answer
+      // if (hasAnswer) return;
+      let p = prompt.trim()
+      const keys = Object.keys(row)
+      keys.forEach((key) => {
+        p = p.replaceAll(`{{${key}}}`, row[key])
+      })
+      queue.add(
+        () => fetchAnswer(p, apiKey),
+        (answer) => onSuccess(idx, answer)
+      )
     })
   }
 
-  return <button onClick={handleSubmit}>Run!</button>
+  return (
+    <div>
+      <input type="text" ref={apiKeyRef} placeholder="access code" />
+      <button
+        onClick={handleSubmit}
+        disabled={disabled}
+        style={{ marginLeft: '8px' }}
+      >
+        Run!
+      </button>
+    </div>
+  )
 }
 
 export default GPTButton
