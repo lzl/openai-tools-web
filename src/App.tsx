@@ -22,7 +22,9 @@ function App() {
         <FileUploader onSuccess={setData} />
         {isShowButton && <SheetDownloader data={data} />}
       </div>
-      <SheetTable data={data} />
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <SheetTable data={data} />
+      </div>
     </div>
   )
 }
