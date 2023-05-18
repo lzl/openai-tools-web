@@ -6,6 +6,7 @@ interface IProps {
 }
 
 function FileUploader({ onSuccess }: IProps) {
+  const [loading, setLoading] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -26,6 +27,7 @@ function FileUploader({ onSuccess }: IProps) {
   const handleUploadFile = async () => {
     try {
       if (selectedFile) {
+        setLoading(true)
         const formData = new FormData()
         formData.append('file', selectedFile)
         // Upload formData to server
@@ -42,13 +44,17 @@ function FileUploader({ onSuccess }: IProps) {
     } catch (error: any) {
       setError(`Failed: ${error.message}`)
       console.error(error)
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
     <div>
       <input type="file" onChange={handleFileChange} accept=".xlsx" />
-      <button onClick={handleUploadFile}>Upload</button>
+      <button onClick={handleUploadFile} disabled={loading}>
+        Upload
+      </button>
       {error && <div className="error">{error}</div>}
     </div>
   )

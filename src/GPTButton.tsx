@@ -1,16 +1,25 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { apiBaseUrl } from './const'
 
 class RequestQueue {
   private queue: {
     request: () => Promise<any>
     onSuccess: (answer: string) => void
+    onFinish: () => void
   }[] = []
   private count = 0
   private maxCount = 5
 
-  add(request: () => Promise<any>, onSuccess: (answer: string) => void) {
-    this.queue.push({ request, onSuccess })
+  getCount() {
+    return this.count
+  }
+
+  add(
+    request: () => Promise<any>,
+    onSuccess: (answer: string) => void,
+    onFinish: () => void
+  ) {
+    this.queue.push({ request, onSuccess, onFinish })
     this.next()
   }
 
@@ -18,17 +27,21 @@ class RequestQueue {
     if (this.count >= this.maxCount || this.queue.length === 0) {
       return
     }
-    const { request, onSuccess } = this.queue.shift() || {}
+    const { request, onSuccess, onFinish } = this.queue.shift() || {}
     this.count++
     request?.()
       .then((res) => {
         onSuccess?.(res)
-        this.count--
-        this.next()
       })
-      .catch(() => {
+      .catch((err) => {
+        console.log('[RequestQueue] request error:', err)
+      })
+      .finally(() => {
         this.count--
         this.next()
+        if (this.count === 0) {
+          onFinish?.()
+        }
       })
   }
 }
@@ -70,11 +83,13 @@ interface IProps {
 }
 
 function GPTButton({ prompt, data, onSuccess, disabled }: IProps) {
+  const [loading, setLoading] = useState(false)
   const apiKeyRef = useRef<HTMLInputElement>(null)
 
   async function handleSubmit() {
     const apiKey = apiKeyRef.current?.value
     if (!apiKey) return
+    setLoading(true)
     const queue = new RequestQueue()
     data.forEach((row, idx) => {
       // const hasAnswer = !!row.answer
@@ -86,7 +101,8 @@ function GPTButton({ prompt, data, onSuccess, disabled }: IProps) {
       })
       queue.add(
         () => fetchAnswer(p, apiKey),
-        (answer) => onSuccess(idx, answer)
+        (answer) => onSuccess(idx, answer),
+        () => setLoading(false)
       )
     })
   }
@@ -96,10 +112,10 @@ function GPTButton({ prompt, data, onSuccess, disabled }: IProps) {
       <input type="text" ref={apiKeyRef} placeholder="access code" />
       <button
         onClick={handleSubmit}
-        disabled={disabled}
+        disabled={disabled || loading}
         style={{ marginLeft: '8px' }}
       >
-        Run!
+        {loading ? 'Running...' : 'Run!'}
       </button>
     </div>
   )
