@@ -1,6 +1,5 @@
 import { useState } from 'react'
-
-const URL = 'http://127.0.0.1:5000/parse_excel'
+import { apiBaseUrl } from './const'
 
 interface IProps {
   onSuccess: (json: any[]) => void
@@ -30,7 +29,7 @@ function FileUploader({ onSuccess }: IProps) {
         const formData = new FormData()
         formData.append('file', selectedFile)
         // Upload formData to server
-        const response = await fetch(URL, {
+        const response = await fetch(`${apiBaseUrl}/parse_excel`, {
           method: 'POST',
           body: formData,
         })

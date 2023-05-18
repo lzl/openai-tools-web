@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { apiBaseUrl } from './const'
 
 class RequestQueue {
   private queue: {
@@ -32,8 +33,6 @@ class RequestQueue {
   }
 }
 
-const URL = 'http://127.0.0.1:5000/chat_completions'
-
 interface IMessage {
   role: 'system' | 'assistant' | 'user'
   content: string
@@ -53,7 +52,7 @@ function createPayload(messages: IMessage[]) {
 
 async function fetchAnswer(content: string, apiKey: string) {
   const payload = createPayload([{ role: 'user', content }])
-  return fetch(URL, {
+  return fetch(`${apiBaseUrl}/chat_completions`, {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
