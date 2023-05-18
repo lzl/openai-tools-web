@@ -13,15 +13,17 @@ function App() {
   const isShowButton = !!prompt && !!data?.length
 
   return (
-    <main>
-      <PromptInput value={prompt} onChange={setPrompt} />
-      {isShowButton && (
-        <GPTButton prompt={prompt} data={data} onSuccess={setAnswer} />
-      )}
-      <FileUploader onSuccess={setData} />
-      {isShowButton && <SheetDownloader data={data} />}
+    <div>
+      <div style={{ maxWidth: 600, margin: 'auto' }}>
+        <PromptInput value={prompt} onChange={setPrompt} />
+        {isShowButton && (
+          <GPTButton prompt={prompt} data={data} onSuccess={setAnswer} />
+        )}
+        <FileUploader onSuccess={setData} />
+        {isShowButton && <SheetDownloader data={data} />}
+      </div>
       <SheetTable data={data} />
-    </main>
+    </div>
   )
 }
 
