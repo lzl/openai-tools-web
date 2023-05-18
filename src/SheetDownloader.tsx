@@ -47,7 +47,7 @@ function SheetDownloader({ data }: IProps) {
 
   return (
     <button onClick={handleClick} disabled={loading}>
-      Download
+      {loading ? 'Downloading...' : 'Download'}
     </button>
   )
 }

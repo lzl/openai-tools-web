@@ -53,7 +53,7 @@ function FileUploader({ onSuccess }: IProps) {
     <div>
       <input type="file" onChange={handleFileChange} accept=".xlsx" />
       <button onClick={handleUploadFile} disabled={loading}>
-        Upload
+        {loading ? 'Uploading...' : 'Upload'}
       </button>
       {error && <div className="error">{error}</div>}
     </div>
