@@ -1,4 +1,4 @@
-const example = "{{表头名称}}"
+const example = "{表头名称}"
 
 interface IProps {
   value: string
