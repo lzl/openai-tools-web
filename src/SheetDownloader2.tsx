@@ -18,6 +18,7 @@ function SheetDownloader() {
     })
       .catch((error) => {
         console.error('Error:', error)
+        alert('Error: ' + error.message)
       })
       .finally(() => {
         setLoading(false)
@@ -26,9 +27,9 @@ function SheetDownloader() {
 
   return (
     <>
-      <input type="text" ref={requestIdRef} placeholder="request_id" />
+      <input type="text" ref={requestIdRef} placeholder="request_id" style={{ marginRight: '8px' }} />
       <button onClick={handleClick} disabled={loading}>
-        {loading ? 'Downloading...' : 'Download'}
+        {loading ? 'Sending...' : 'Send Email'}
       </button>
     </>
   )

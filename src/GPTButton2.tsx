@@ -3,30 +3,31 @@ import { apiBaseUrlServer } from './const'
 import { nanoid } from 'nanoid'
 
 interface IProps {
-  prompt: string
   data: any[]
   disabled?: boolean
 }
 
-function GPTButton({ prompt, data, disabled }: IProps) {
+function GPTButton({ data, disabled }: IProps) {
   const [loading, setLoading] = useState(false)
   const [model, setModel] = useState('gpt-3.5-turbo')
   const [temperature, setTemperature] = useState(0.7)
   const apiKeyRef = useRef<HTMLInputElement>(null)
   const emailRef = useRef<HTMLInputElement>(null)
   const systemMessageRef = useRef<HTMLTextAreaElement>(null)
+  const userMessageRef = useRef<HTMLTextAreaElement>(null)
 
   async function handleSubmit() {
     const apiKey = apiKeyRef.current?.value
     const email = emailRef.current?.value
     const systemMessage = systemMessageRef.current?.value
-    if (!apiKey || !email) return
+    const userMessage = userMessageRef.current?.value
+    if (!apiKey || !email || !userMessage) return
     const sheets = data.map((row) => ({
       id: nanoid(),
       row,
     }))
     const questions = sheets.map(({ id, row }) => {
-      let text = prompt.trim()
+      let text = userMessage.trim()
       const keys = Object.keys(row)
       keys.forEach((key) => {
         text = text.replaceAll(`{${key}}`, row[key])
@@ -52,8 +53,9 @@ function GPTButton({ prompt, data, disabled }: IProps) {
         },
         body: JSON.stringify(payload),
       })
-    } catch (error) {
+    } catch (error: any) {
       console.log('[GPTButton] ask_all_questions error:', error)
+      alert('Error: ' + error.message)
     } finally {
       setLoading(false)
     }
@@ -91,15 +93,16 @@ function GPTButton({ prompt, data, disabled }: IProps) {
           rows={3}
           placeholder="System Instruction: You are ChatGPT, a large language model trained by OpenAI."
         />
+
+        <textarea ref={userMessageRef} rows={10} placeholder="User Prompt: {表头名称}" />
       </div>
 
       <div>
-        <input type="email" ref={emailRef} placeholder="email" />
-        <input type="text" ref={apiKeyRef} placeholder="access code" />
+        <input type="email" ref={emailRef} placeholder="email" style={{ marginRight: '8px' }} />
+        <input type="text" ref={apiKeyRef} placeholder="access code" style={{ marginRight: '8px' }} />
         <button
           onClick={handleSubmit}
           disabled={disabled || loading}
-          style={{ marginLeft: '8px' }}
         >
           {loading ? 'Running...' : 'Run!'}
         </button>
