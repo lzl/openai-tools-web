@@ -53,6 +53,7 @@ function GPTButton({ data, disabled }: IProps) {
         },
         body: JSON.stringify(payload),
       })
+      alert('Success! Please check your email.')
     } catch (error: any) {
       console.log('[GPTButton] ask_all_questions error:', error)
       alert('Error: ' + error.message)
