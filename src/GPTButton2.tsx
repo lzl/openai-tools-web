@@ -22,21 +22,28 @@ function GPTButton({ data, disabled }: IProps) {
     const systemMessage = systemMessageRef.current?.value
     const userMessage = userMessageRef.current?.value
     if (!apiKey || !email || !userMessage) return
-    const sheets = data.map((row) => ({
+    const formattedData = data.map((row) => {
+      const keys = Object.keys(row)
+      return keys.map((key) => {
+        return [key, `${row[key]}`]
+      })
+    })
+    const sheets = formattedData.map((row) => ({
       id: nanoid(),
       row,
     }))
+    console.log('sheets:', sheets)
     const questions = sheets.map(({ id, row }) => {
       let text = userMessage.trim()
-      const keys = Object.keys(row)
-      keys.forEach((key) => {
-        text = text.replaceAll(`{${key}}`, row[key])
+      row.forEach(([key, value]) => {
+        text = text.replaceAll(`{${key}}`, value)
       })
       return {
         id,
         text,
       }
     })
+    console.log('questions:', questions)
     const config = {
       model,
       temperature,
@@ -95,16 +102,27 @@ function GPTButton({ data, disabled }: IProps) {
           placeholder="System Instruction: You are ChatGPT, a large language model trained by OpenAI."
         />
 
-        <textarea ref={userMessageRef} rows={10} placeholder="User Prompt: {表头名称}" />
+        <textarea
+          ref={userMessageRef}
+          rows={10}
+          placeholder="User Prompt: {表头名称}"
+        />
       </div>
 
       <div>
-        <input type="email" ref={emailRef} placeholder="email" style={{ marginRight: '8px' }} />
-        <input type="text" ref={apiKeyRef} placeholder="access code" style={{ marginRight: '8px' }} />
-        <button
-          onClick={handleSubmit}
-          disabled={disabled || loading}
-        >
+        <input
+          type="email"
+          ref={emailRef}
+          placeholder="email"
+          style={{ marginRight: '8px' }}
+        />
+        <input
+          type="text"
+          ref={apiKeyRef}
+          placeholder="access code"
+          style={{ marginRight: '8px' }}
+        />
+        <button onClick={handleSubmit} disabled={disabled || loading}>
           {loading ? 'Running...' : 'Run!'}
         </button>
       </div>
