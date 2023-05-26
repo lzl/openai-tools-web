@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
 import { produce } from 'immer'
-import { maxRows } from './const'
 
 function useSheetData() {
   const [data, setData] = useState<any[]>([])
@@ -9,7 +8,7 @@ function useSheetData() {
   const setDataLimit = useCallback((json: any) => {
     const { blob_name, json_data } = json;
     setFilename(blob_name)
-    setData(json_data.slice(0, maxRows))
+    setData(json_data)
   }, [])
 
   const setAnswer = useCallback((idx: number, response: any) => {
