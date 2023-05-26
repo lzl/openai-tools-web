@@ -7,10 +7,9 @@ function useSheetData() {
   const [filename, setFilename] = useState<string>('')
 
   const setDataLimit = useCallback((json: any) => {
-    console.log('json:', json)
     const { blob_name, json_data } = json;
     setFilename(blob_name)
-    setData(JSON.parse(json_data).slice(0, maxRows))
+    setData(json_data.slice(0, maxRows))
   }, [])
 
   const setAnswer = useCallback((idx: number, response: any) => {
