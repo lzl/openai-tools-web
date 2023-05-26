@@ -5,9 +5,10 @@ import { nanoid } from 'nanoid'
 interface IProps {
   data: any[]
   disabled?: boolean
+  filename: string;
 }
 
-function GPTButton({ data, disabled }: IProps) {
+function GPTButton({ data, disabled, filename }: IProps) {
   const [loading, setLoading] = useState(false)
   const [model, setModel] = useState('gpt-3.5-turbo')
   const [temperature, setTemperature] = useState(0.7)
@@ -21,35 +22,37 @@ function GPTButton({ data, disabled }: IProps) {
     const email = emailRef.current?.value
     const systemMessage = systemMessageRef.current?.value
     const userMessage = userMessageRef.current?.value
-    if (!apiKey || !email || !userMessage) return
-    const formattedData = data.map((row) => {
-      const keys = Object.keys(row)
-      return keys.map((key) => {
-        return [key, `${row[key]}`]
-      })
-    })
-    const sheets = formattedData.map((row) => ({
-      id: nanoid(),
-      row,
-    }))
-    console.log('sheets:', sheets)
-    const questions = sheets.map(({ id, row }) => {
-      let text = userMessage.trim()
-      row.forEach(([key, value]) => {
-        text = text.replaceAll(`{${key}}`, value)
-      })
-      return {
-        id,
-        text,
-      }
-    })
-    console.log('questions:', questions)
+    if (!apiKey || !email || !userMessage || !filename) return
+    // const formattedData = data.map((row) => {
+    //   const keys = Object.keys(row)
+    //   return keys.map((key) => {
+    //     return [key, `${row[key]}`]
+    //   })
+    // })
+    // const sheets = formattedData.map((row) => ({
+    //   id: nanoid(),
+    //   row,
+    // }))
+    // console.log('sheets:', sheets)
+    // const questions = sheets.map(({ id, row }) => {
+    //   let text = userMessage.trim()
+    //   row.forEach(([key, value]) => {
+    //     text = text.replaceAll(`{${key}}`, value)
+    //   })
+    //   return {
+    //     id,
+    //     text,
+    //   }
+    // })
+    // console.log('questions:', questions)
     const config = {
       model,
       temperature,
       systemMessage,
+      userMessage,
     }
-    const payload = { email, config, sheets, questions }
+    // const payload = { email, config, sheets, questions, blob_name: filename }
+    const payload = { email, config, blob_name: filename }
     try {
       setLoading(true)
       await fetch(`${apiBaseUrlServer}/ask_all_questions`, {

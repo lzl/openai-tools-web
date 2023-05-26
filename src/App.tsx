@@ -5,7 +5,7 @@ import GPTButton2 from './GPTButton2'
 import SheetDownloader2 from './SheetDownloader2'
 
 function App() {
-  const { data, setData } = useSheetData()
+  const { data, setData, filename } = useSheetData()
 
   const isShowButton = !!data?.length
 
@@ -13,7 +13,7 @@ function App() {
     <div>
       <div style={{ maxWidth: 600, margin: 'auto' }}>
         <FileUploader onSuccess={setData} />
-        {isShowButton && <GPTButton2 data={data} />}
+        {isShowButton && <GPTButton2 data={data} filename={filename} />}
       </div>
       {isShowButton && (
         <div style={{ display: 'flex', justifyContent: 'center' }}>

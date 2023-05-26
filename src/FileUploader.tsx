@@ -31,7 +31,8 @@ function FileUploader({ onSuccess }: IProps) {
         const formData = new FormData()
         formData.append('file', selectedFile)
         // Upload formData to server
-        const response = await fetch(`${apiBaseUrl}/parse_excel`, {
+        // const response = await fetch(`${apiBaseUrl}/parse_excel`, {
+        const response = await fetch(`${apiBaseUrl}/upload_excel`, {
           method: 'POST',
           body: formData,
         })

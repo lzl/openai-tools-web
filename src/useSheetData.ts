@@ -4,9 +4,13 @@ import { maxRows } from './const'
 
 function useSheetData() {
   const [data, setData] = useState<any[]>([])
+  const [filename, setFilename] = useState<string>('')
 
-  const setDataLimit = useCallback((json: any[]) => {
-    setData(json.slice(0, maxRows))
+  const setDataLimit = useCallback((json: any) => {
+    console.log('json:', json)
+    const { blob_name, json_data } = json;
+    setFilename(blob_name)
+    setData(JSON.parse(json_data).slice(0, maxRows))
   }, [])
 
   const setAnswer = useCallback((idx: number, response: any) => {
@@ -26,6 +30,7 @@ function useSheetData() {
     data,
     setData: setDataLimit,
     setAnswer,
+    filename
   }
 }
 
