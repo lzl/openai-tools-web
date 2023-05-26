@@ -1,14 +1,12 @@
 import { useRef, useState } from 'react'
 import { apiBaseUrlServer } from './const'
-import { nanoid } from 'nanoid'
 
 interface IProps {
-  data: any[]
+  filename: string
   disabled?: boolean
-  filename: string;
 }
 
-function GPTButton({ data, disabled, filename }: IProps) {
+function GPTButton({ disabled, filename }: IProps) {
   const [loading, setLoading] = useState(false)
   const [model, setModel] = useState('gpt-3.5-turbo')
   const [temperature, setTemperature] = useState(0.7)

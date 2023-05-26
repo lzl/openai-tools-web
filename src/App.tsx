@@ -13,7 +13,7 @@ function App() {
     <div>
       <div style={{ maxWidth: 600, margin: 'auto' }}>
         <FileUploader onSuccess={setData} />
-        {isShowButton && <GPTButton2 data={data} filename={filename} />}
+        {isShowButton && <GPTButton2 filename={filename} />}
       </div>
       {isShowButton && (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
