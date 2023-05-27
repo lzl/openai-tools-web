@@ -53,15 +53,19 @@ function GPTButton({ disabled, filename }: IProps) {
     const payload = { email, config, blob_name: filename }
     try {
       setLoading(true)
-      await fetch(`${apiBaseUrlServer}/ask_all_questions`, {
+      const result = await fetch(`${apiBaseUrlServer}/ask_all_questions`, {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
           authorization: 'Bearer ' + apiKey || '',
         },
         body: JSON.stringify(payload),
-      })
-      alert('Success! Please check your email.')
+      }).then((res) => res.json())
+      if (result.success) {
+        alert('Success! Please check your email.')
+      } else {
+        throw new Error(result.error)
+      }
     } catch (error: any) {
       console.log('[GPTButton] ask_all_questions error:', error)
       alert('Error: ' + error.message)
