@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { apiBaseUrlServer } from './const'
+import emailRegex from './emailRegex'
 
 interface IProps {
   filename: string
@@ -21,35 +22,18 @@ function GPTButton({ disabled, filename }: IProps) {
     const systemMessage = systemMessageRef.current?.value
     const userMessage = userMessageRef.current?.value
     if (!apiKey || !email || !userMessage || !filename) return
-    // const formattedData = data.map((row) => {
-    //   const keys = Object.keys(row)
-    //   return keys.map((key) => {
-    //     return [key, `${row[key]}`]
-    //   })
-    // })
-    // const sheets = formattedData.map((row) => ({
-    //   id: nanoid(),
-    //   row,
-    // }))
-    // console.log('sheets:', sheets)
-    // const questions = sheets.map(({ id, row }) => {
-    //   let text = userMessage.trim()
-    //   row.forEach(([key, value]) => {
-    //     text = text.replaceAll(`{${key}}`, value)
-    //   })
-    //   return {
-    //     id,
-    //     text,
-    //   }
-    // })
-    // console.log('questions:', questions)
+
+    const isEmailValid = emailRegex().test(email)
+    if (!isEmailValid) {
+      alert('Please make sure the email address is valid')
+    }
+
     const config = {
       model,
       temperature,
       systemMessage,
       userMessage,
     }
-    // const payload = { email, config, sheets, questions, blob_name: filename }
     const payload = { email, config, blob_name: filename }
     try {
       setLoading(true)
