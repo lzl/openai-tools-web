@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { apiBaseUrlServer } from './const'
+import { apiBaseUrl } from './const'
 import emailRegex from './emailRegex'
 
 interface IProps {
@@ -37,7 +37,7 @@ function GPTButton({ disabled, filename }: IProps) {
     const payload = { email, config, blob_name: filename }
     try {
       setLoading(true)
-      const result = await fetch(`${apiBaseUrlServer}/ask_all_questions`, {
+      const result = await fetch(`${apiBaseUrl}/ask_all_questions`, {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
@@ -68,8 +68,10 @@ function GPTButton({ disabled, filename }: IProps) {
             setModel(e.target.value)
           }}
         >
-          <option value="gpt-3.5-turbo">GPT-3.5</option>
-          <option value="gpt-4">GPT-4</option>
+          <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+          <option value="gpt-3.5-turbo-1106">gpt-3.5-turbo-1106</option>
+          <option value="gpt-4">gpt-4</option>
+          <option value="gpt-4-1106-preview">gpt-4-1106-preview</option>
         </select>
 
         <label htmlFor="temperature">Temperature: {temperature}</label>
